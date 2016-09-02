@@ -1,4 +1,4 @@
-from urllib2 import Request, urlopen, URLError, HTTPError 
+import urllib2 
 import urllib   
 import re    
 import thread    
@@ -13,8 +13,7 @@ class Spider_Model:
     
  
     def GetPage(self,page):    
-        myUrl = "http://www.qiushibaike.com/hot/page/" + page 
-        print myUrl   
+        myUrl = "http://www.qiushibaike.com/hot/page/" + page   
         user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'   
         #headers = { 'User-Agent' : user_agent }   
         headers = {  
@@ -25,6 +24,12 @@ class Spider_Model:
         
         print '2222222222222'
         myResponse = urllib2.urlopen(req)  
+        
+#        request = urllib2.Request('http://www.baidu.com/')  
+#        request.add_header('User-Agent', 'fake-client')  
+#        response = urllib2.urlopen(request)  
+        
+        
         print '33333333333'
         myPage = myResponse.read()    
         print '4444444444'
