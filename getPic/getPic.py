@@ -4,7 +4,6 @@ import urllib
 def getHtml(url):  
     page = urllib.urlopen(url)  
     html = page.read()
-    print html
     return html  
   
 def getImg(html):  

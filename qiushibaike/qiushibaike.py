@@ -5,7 +5,7 @@ import re
 import thread    
 import time    
 class Spider_Model:    
-        
+       
     def __init__(self):    
         self.page = 1    
         self.pages = []    
