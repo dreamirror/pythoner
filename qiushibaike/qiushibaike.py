@@ -1,9 +1,9 @@
+# -*- coding: utf-8 -*-
 import urllib2 
 import urllib   
 import re    
 import thread    
 import time    
-
 class Spider_Model:    
         
     def __init__(self):    
@@ -13,50 +13,48 @@ class Spider_Model:
     
  
     def GetPage(self,page):    
-        myUrl = "http://www.qiushibaike.com/hot/page/" + page   
+        myUrl = "http://www.qiushibaike.com/hot/page/"+ page   
         user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'   
         #headers = { 'User-Agent' : user_agent }   
         headers = {  
             'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'  
         }  
-        print '11111111111'
+  
         req = urllib2.Request(myUrl, headers = headers)   
         
-        print '2222222222222'
         myResponse = urllib2.urlopen(req)  
         
-#        request = urllib2.Request('http://www.baidu.com/')  
-#        request.add_header('User-Agent', 'fake-client')  
-#        response = urllib2.urlopen(request)  
-        
-        
-        print '33333333333'
+
         myPage = myResponse.read()    
-        print '4444444444'
-        unicodePage = myPage.decode("utf-8")    
-        myItems = re.findall('<div.*class="content".*>(.*)</div>',unicodePage,re.S)    
+        unicodePage = myPage.decode("utf-8")
+        myItems = re.findall('<div.*?class="content">(.*?)</div>',unicodePage,re.S)    
+        print page
         items = []    
-        for item in myItems:    
-            items.append([item[0].replace("\n",""),item[1].replace("\n","")])    
+        for item in myItems:
+            #print item
+            #items.append([item[0].replace("\n",""),item[1].replace("\n","")])
+            item.replace("<span>","")
+            items.append(item)
         return items    
     
  
     def LoadPage(self):    
         while self.enable:      
             if len(self.pages) < 2:    
-                try:    
-                    myPage = self.GetPage(str(self.page))    
+                try:
+                    myPage = self.GetPage(str(self.page))
                     self.page += 1    
-                    self.pages.append(myPage)    
+                    self.pages.append(myPage)
                 except:    
                     print 'cont connect qiushibaike !!!!!'
 
             else:    
                 time.sleep(1)    
             
-    def ShowPage(self,nowPage,page):    
-        for items in nowPage:    
-            print u'page%d' % page , items[0]  , items[1]    
+    def ShowPage(self,nowPage,page):
+        for items in nowPage:
+            print items
+            #print u'mypage%d' % page , items[0]  , items[1]    
             myInput = raw_input()    
             if myInput == "quit":    
                 self.enable = False    
@@ -72,7 +70,8 @@ class Spider_Model:
             
         while self.enable:    
             if self.pages:    
-                nowPage = self.pages[0]    
+                nowPage = self.pages[0]
+
                 del self.pages[0]    
                 self.ShowPage(nowPage,page)    
                 page += 1    

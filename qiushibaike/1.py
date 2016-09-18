@@ -1,5 +1,5 @@
-import urllib2  
-request = urllib2.Request('http://www.baidu.com/')  
-request.add_header('User-Agent', 'fake-client')  
-response = urllib2.urlopen(request)  
-print response.read() 
+a = 1
+b = 3
+if a == 2
+    if b == 3
+    print '1111'
