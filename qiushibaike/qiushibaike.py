@@ -33,7 +33,9 @@ class Spider_Model:
         for item in myItems:
             #print item
             #items.append([item[0].replace("\n",""),item[1].replace("\n","")])
-            item.replace("<span>","")
+            item = item.replace("<br/>","\n")
+            item = item.replace("<span>","")
+            item = item.replace("</span>","")
             items.append(item)
         return items    
     
