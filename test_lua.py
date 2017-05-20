@@ -10,12 +10,18 @@ import os
 reload(sys)
 sys.setdefaultencoding("utf8")
 
+if not os.path.exists('lua'):
+    os.mkdir('lua')
+
+if not os.path.exists('excel'):
+    os.mkdir('excel')
+
 print('1：批量，2：单件')
 type = raw_input("选择功能:")
 
-lua_path = 'E:\excel_lua\lua\\'
-excel_path = 'E:\excel_lua\excel\\'
-path = "E:\excel_lua\\"
+lua_path = 'lua\\'
+excel_path = 'excel\\'
+
 def convert_single():
     print("单件");
     src = raw_input("res file name:")
@@ -41,7 +47,7 @@ def eachFile(filepath):
     res = []
     for allDir in pathDir:
         child = os.path.join('%s\%s' % (filepath, allDir))
-        if child.split('.')[-1] == 'xls' or child.split('.')[-1] == 'xls':
+        if child.split('.')[-1] == 'xls' or child.split('.')[-1] == 'xlsx':
             res.append(child.decode('gbk'))
     else:
         return res
