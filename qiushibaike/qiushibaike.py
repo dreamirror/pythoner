@@ -13,7 +13,7 @@ class Spider_Model:
     
  
     def GetPage(self,page):    
-        myUrl = "http://www.qiushibaike.com/hot/page/"+ page   
+        myUrl = "https://www.135cd.com/htm/pic2/55341.html"   
         user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'   
         #headers = { 'User-Agent' : user_agent }   
         headers = {  
@@ -28,7 +28,8 @@ class Spider_Model:
         myPage = myResponse.read()    
         unicodePage = myPage.decode("utf-8")
         myItems = re.findall('<div.*?class="content">(.*?)</div>',unicodePage,re.S)    
-        print page
+        print myPage
+    
         items = []    
         for item in myItems:
             #print item
