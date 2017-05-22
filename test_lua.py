@@ -6,6 +6,7 @@
 import sys
 import xlrd
 import os
+import types
 
 reload(sys)
 sys.setdefaultencoding("utf8")
@@ -16,14 +17,13 @@ if not os.path.exists('lua'):
 if not os.path.exists('excel'):
     os.mkdir('excel')
 
-print('1：批量，2：单件')
-type = raw_input("选择功能:")
+print('1:batch,2:single')
+type = raw_input("choose func:")
 
 lua_path = 'lua\\'
 excel_path = 'excel\\'
 
 def convert_single():
-    print("单件");
     src = raw_input("res file name:")
     workbook = xlrd.open_workbook(excel_path+src)
     writeData = "-- this file create by python\n"
@@ -60,7 +60,7 @@ def create_one_lua(writeData,workbook,out):
     for booksheet in workbook.sheets():
         for col in xrange(booksheet.ncols):
             for row in xrange(booksheet.nrows):
-                if  row == 1 :
+                if  row == 0 :
                     list_name.append(str(booksheet.cell(row, col).value))
 
     for booksheet in workbook.sheets():
@@ -70,14 +70,17 @@ def create_one_lua(writeData,workbook,out):
                 if  row == 0 or row == 1 :
                     break;
                 elif col ==0:
-                    id = int(booksheet.cell(row, col).value)
-                    print(id)
+                    cellStr = booksheet.cell(row, col).value;
+                    id = '' if cellStr == '' else int(cellStr)
                     writeData = writeData + '\t' + '[' + str(id).decode("utf-8").encode("utf-8") + ']' + ' = ' + '{ '
                 else :
+                    cellStr = booksheet.cell(row, col).value
+                    if isinstance(cellStr, float):
+                        cellStr = int(cellStr) if cellStr % 1 == 0 else cellStr
                     if  str(booksheet.cell(row, col).value)[0:1] == '{':
-                        writeData = writeData + list_name[col] + '=' + str(booksheet.cell(row, col).value) + ' , '
+                        writeData = writeData + list_name[col] + '=' + str(cellStr) + ' , '
                     else:
-                        writeData = writeData +list_name[col]+ '="' + str(booksheet.cell(row, col).value) + '" , '
+                        writeData = writeData +list_name[col]+ '="' + str(cellStr) + '" , '
             else :
                 writeData = writeData + '} ,\n'
         else :
