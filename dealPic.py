@@ -18,32 +18,32 @@ def autoCrop(image,name):
     left = None
     right = None
     top = None
+    tempTop = {"x":0,"y":0,"height":0}
+    tempBottom = {"x":0,"y":0,"height":image.height}
     bottom = None
     if image.mode != 'RGB':
         image = image.convert("RGB")
         for w in range (0,image.width):
             for h in range (0,image.height):
+                if image.getpixel((w, h)) != (255, 255, 255):
+                    if tempTop['height'] < h:
+                        tempTop['x'] = w;
+                        tempTop['y'] = h;
+                        tempTop['height'] = h
+                    if tempBottom['height'] > h:
+                        tempBottom['x'] = w;
+                        tempBottom['y'] = h;
+                        tempBottom['height'] = h
+
                 if left == None:
-                   if image.getpixel((w,h)) == (255,255,255):
+                    if image.getpixel((w,h)) == (255,255,255):
                        continue
-                   else:
-                       left = (w,h)
+                    else:
+                        left = (w,h)
                 else:
                     if  image.getpixel((w,h)) != (255,255,255):
                         right = (w,h)
-
-
-        for h in range(0, image.height):
-             for w in range(0, image.width):
-                 if top == None:
-                    if image.getpixel((w, h)) == (255, 255, 255):
-                        continue
-                    else:
-                        top = (w, h)
-                 else:
-                    if image.getpixel((w, h)) != (255, 255, 255):
-                        bottom = (w, h)
-        box = (left[0], top[1], right[0], bottom[1])
+        box = (left[0],  tempBottom['y'], right[0],  tempTop['y'])
         return box;
 
     # find all filles
@@ -65,6 +65,7 @@ def cropDozen():
         name = file.split('\\')[-1].split('.')[0]
         im = PIL.Image.open(file)
         box = autoCrop(im,name)
+        print(box)
         image = im.crop(box)
         image.save(outPath +name+ '.png', 'png')
         i = i +1;
