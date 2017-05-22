@@ -9,7 +9,7 @@ outPath = "out\\"
 def drawBar(per):
     str = ''
     for i in range(0,per):
-        str = str+'-'
+        str = str+'\\'
     else:
         return str
 
@@ -70,7 +70,7 @@ def cropDozen():
         image.save(outPath +name+ '.png', 'png')
         i = i +1;
         per = int((float(i) / float(num)) * 100)
-        print(str(per)+"%" + drawBar(per))
+        print(drawBar(per)+str(per)+"%" )
         #print(str(int((i/num)*100)) + '%')
 
 if not os.path.exists('res'):
