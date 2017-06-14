@@ -3,6 +3,7 @@ import sys
 import os
 import csv
 import xlrd
+import shutil
 from xlutils.copy import copy
 from openpyxl import load_workbook
 
@@ -34,6 +35,39 @@ def write_excel():
             m = 0
             n = n +1
     tmpData.save(gl_excel_path)
+def write_excel_higher():
+    '''
+    data = load_workbook('111.xlsx')
+    tmpData = data.worksheets[5]
+    tmpData.cell(row = 1 ,column = 1,value = 1111)
+    data.save("11133.xlsx")
+    '''
+    global gl_excel_path, gl_sheet_name, is_lower
+    if is_lower:
+        gl_sheet_name = gl_sheet_name.name
+    if gl_excel_path == None or gl_excel_path == '':
+        print('None gl path')
+        return
+    file_name = gl_excel_path.split("\\")[-1]
+    shutil.move(gl_excel_path,file_name)
+
+    data = load_workbook(file_name)
+    tmpData = data.worksheets[5]
+    csvfile = open(gl_sheet_name + "_1.csv", "rb")
+    from csv import reader
+    readers = reader(csvfile)
+    n = 1
+    m = 1
+    for row in readers:
+        for i in row:
+            print(i)
+            tmpData.cell(row= n,column = m,value = unicode(i,'utf-8'))
+            m = m + 1
+        else:
+            m = 1
+            n = n + 1
+    data.save("111222.xlsx")
+
 
 def eachFile(filepath):
     pathDir =  os.listdir(filepath)
@@ -165,7 +199,7 @@ def excel2csv(filename,filename2):
                 print(str(i) + ":" + sheet.name)
                 i = i + 1;
             index = raw_input("choose sheet:")
-            global gl_sheet_name
+            global gl_sheet_namei
             choose_sheet = sheets[int(index)]
             gl_sheet_name = choose_sheet;
             create_csv_lower(filename, choose_sheet)
@@ -187,6 +221,6 @@ get_excel_name()
 
 do = raw_input("write_table? y/n")
 if do == 'y':
-    write_excel()
+    write_excel_higher()
 else:
     print("baibai")
