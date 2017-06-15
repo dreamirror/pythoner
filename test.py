@@ -1,4 +1,4 @@
-#coding: utf-8
+# -*- coding: utf-8 -*-
 import sys
 import os
 import csv
@@ -10,6 +10,7 @@ from openpyxl import load_workbook
 global gl_sheet_name
 global gl_excel_path
 global is_lower
+global sheet_index
 
 def write_excel():
     global gl_excel_path,gl_sheet_name,is_lower
@@ -20,9 +21,9 @@ def write_excel():
         return
     
     data = xlrd.open_workbook(gl_excel_path)
+    file_name = gl_excel_path.split('\\')[-1]
     tmpData = copy(data)
-
-    csvfile = open(gl_sheet_name+"_1.csv","rb")
+    csvfile = open(gl_sheet_name+"_2.csv","rb")
     from csv import reader
     readers = reader(csvfile)
     n = 0
@@ -34,14 +35,10 @@ def write_excel():
         else:
             m = 0
             n = n +1
-    tmpData.save(gl_excel_path)
+    os.remove(gl_excel_path)
+    tmpData.save(file_name)
+
 def write_excel_higher():
-    '''
-    data = load_workbook('111.xlsx')
-    tmpData = data.worksheets[5]
-    tmpData.cell(row = 1 ,column = 1,value = 1111)
-    data.save("11133.xlsx")
-    '''
     global gl_excel_path, gl_sheet_name, is_lower
     if is_lower:
         gl_sheet_name = gl_sheet_name.name
@@ -52,22 +49,22 @@ def write_excel_higher():
     shutil.move(gl_excel_path,file_name)
 
     data = load_workbook(file_name)
-    tmpData = data.worksheets[5]
-    csvfile = open(gl_sheet_name + "_1.csv", "rb")
+    global sheet_index
+    tmpData = data.worksheets[int(sheet_index)]
+    csvfile = open(gl_sheet_name + "_2.csv", "rb")
     from csv import reader
     readers = reader(csvfile)
     n = 1
     m = 1
     for row in readers:
         for i in row:
-            print(i)
             tmpData.cell(row= n,column = m,value = unicode(i,'utf-8'))
             m = m + 1
         else:
             m = 1
             n = n + 1
-    data.save("111222.xlsx")
-
+    os.remove(file_name)
+    data.save(file_name)
 
 def eachFile(filepath):
     pathDir =  os.listdir(filepath)
@@ -91,7 +88,6 @@ def get_excel_name():
         Excel_2 = file
 
     excel2csv(Excel_1,Excel_2)
-
     return Excel_1,Excel_2
 
 def create_csv(filename,sheet):
@@ -157,10 +153,10 @@ def create_csv_lower(filename,sheet):
 def excel2csv(filename,filename2):
     csv_filename = ''
     csv_filename1 = ''
-    if str(filename) == '':
+    if filename == '':
         print 'import excel is None!'
         sys.exit(0)
-    elif str(filename).endswith('x'):
+    elif (filename.split('.')[-1]).endswith('x'):
         print "office 2007 and a higher version"
         global is_lower
         is_lower = False;
@@ -174,6 +170,8 @@ def excel2csv(filename,filename2):
                 print(str(i)+":"+sheet)
                 i = i +1;
             index = raw_input("choose sheet:")
+            global sheet_index
+            sheet_index = index
             global gl_sheet_name
             choose_sheet = sheets[int(index)]
             gl_sheet_name = choose_sheet;
@@ -184,7 +182,7 @@ def excel2csv(filename,filename2):
         except Exception as e:
             print e
         return csv_filename
-    elif str(filename).endswith('s'):
+    elif (filename.split('.')[-1]).endswith('s'):
         print "office 2007 and a lower version"
         global is_lower
         is_lower = True;
@@ -199,11 +197,20 @@ def excel2csv(filename,filename2):
                 print(str(i) + ":" + sheet.name)
                 i = i + 1;
             index = raw_input("choose sheet:")
-            global gl_sheet_namei
+            global sheet_index
+            sheet_index = index
+            global gl_sheet_name
             choose_sheet = sheets[int(index)]
             gl_sheet_name = choose_sheet;
             create_csv_lower(filename, choose_sheet)
-            create_csv_lower(filename2, choose_sheet)
+
+            xls_file_reader2 = xlrd.open_workbook(filename2)
+            sheets2 = []
+            for sheet2 in xls_file_reader2.sheets():
+                sheets2.append(sheet2)
+            choose_sheet2 = sheets2[int(index)]
+            create_csv_lower(filename2, choose_sheet2)
+
             global gl_excel_path
             gl_excel_path = filename2
 
@@ -219,8 +226,12 @@ if not os.path.exists('Excel_2'):
 
 get_excel_name()
 
-do = raw_input("write_table? y/n")
+do = raw_input("create_Excel? y/n")
 if do == 'y':
-    write_excel_higher()
+    if is_lower:
+        write_excel()
+    else:
+        write_excel_higher()
 else:
     print("baibai")
+    os._exit(0);
