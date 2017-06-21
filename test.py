@@ -4,6 +4,7 @@ import os
 import csv
 import xlrd
 import shutil
+import chardet
 from xlutils.copy import copy
 from openpyxl import load_workbook
 
@@ -30,7 +31,9 @@ def write_excel():
     m = 0
     for row in readers:
         for i in row:
-            tmpData.get_sheet(gl_sheet_name).write(n,m,unicode(i,'utf-8'))
+            print i
+            print chardet.detect(i)['encoding']
+            tmpData.get_sheet(gl_sheet_name).write(n,m,unicode(i,chardet.detect(i)['encoding'] or 'utf-8'))
             m = m + 1
         else:
             m = 0
@@ -58,7 +61,9 @@ def write_excel_higher():
     m = 1
     for row in readers:
         for i in row:
-            tmpData.cell(row= n,column = m,value = unicode(i,'utf-8'))
+            print i
+            print chardet.detect(i)['encoding']
+            tmpData.cell(row= n,column = m,value = unicode(i,chardet.detect(i)['encoding'] or 'utf-8'))
             m = m + 1
         else:
             m = 1
